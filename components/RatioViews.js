@@ -51,7 +51,7 @@ export default function RatioViews({ playersData, avatars }) {
                             </div>
                         </div>
                         {index < playersData.length - 1 && (
-                            <span className="text-2xl font-medium mx-12 my-4 mc-font">vs.</span>
+                            <span className="text-2xl font-medium mx-6 my-4 mc-font">vs.</span>
                         )}
                     </React.Fragment>
                 ))}

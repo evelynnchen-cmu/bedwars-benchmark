@@ -25,8 +25,6 @@ export default function Home() {
   function addPlayer() {
     if (usernames.length < 4) {
       setUsernames([...usernames, '']);
-    } else {
-      toast.error("You can only add up to 4 players");
     }
   };
 
@@ -35,14 +33,31 @@ export default function Home() {
     setUsernames(usernames.filter((_, i) => i !== index));
   };
 
-  async function checkUsernames() {
+  async function compare() {
+    setIsLoading(true);
 
     // check if any of the usernames are empty
     if (usernames.some(username => username.trim() === '')) {
       toast(`Please fill in all usernames`, { icon: '✏️' });
+      setIsLoading(false);
+      return;
+    }
+    const allValidUsernames = await checkUsernames();
+    if (!allValidUsernames) {
+      setIsLoading(false);
       return;
     }
 
+    const fetchedPlayerData = await fetchPlayerData();
+    if (!fetchedPlayerData) {
+      setIsLoading(false);
+      return;
+    }
+
+    goToCompare();
+  }
+
+  async function checkUsernames() {
     // check if usernames are valid
     const invalidUsernames = [];
 
@@ -54,50 +69,58 @@ export default function Home() {
       }
       else if (data.status === 429) {
         toast.error(`Too many requests to Mojang API. Please try again later.`);
-        return;
-
+        return false;
       }
       else if (data.status === 500) {
         toast.error(`Failed to check if username ${uname} is valid.`);
-        return;
+        return false;
       }
     }
-    if (invalidUsernames.length > 0) {
-      toast.error(`Invalid username(s): ${invalidUsernames.join(', ')}`);
-      return;
-    }
 
-    fetchPlayerData();
+    // successfully ran every username against mojang api 
+
+    if (invalidUsernames.length > 0) {
+      toast.error(`Invalid username(s): ${invalidUsernames.join(', ')} Please check the spelling and try again.`);
+      return false;
+    }
+    return true;
   };
 
   async function fetchPlayerData() {
-    setIsLoading(true);
-    const fetchPromises = usernames.map(uname => {
-      const url = `/api/hypixel?username=${uname}`;
-      return fetch(url)
-        .then(response => {
-          if (!response.ok) {
-            throw new Error(uname);
-          }
-          return response.json();
-        })
-        .then(data => ({
-          username: uname,
-          data: data
-        }))
-        .catch(error => ({
-          username: error.message,
-          error: true
-        }));
-    });
+    try {
+      let results = []
+      let repeatUsernames = [];
 
-    const playerData = await Promise.all(fetchPromises);
-    localStorage.setItem('playerData', JSON.stringify(playerData));
+      for (const uname of usernames) {
+        const response = await fetch(`/api/hypixel?username=${uname}`);
+        if (!response.ok) {
+          repeatUsernames.push(uname);
+          break;
+        }
+        const data = await response.json();
+        results.push({ username: uname, data: data });
+      }
 
-    const existingSearches = JSON.parse(localStorage.getItem('searchHistory')) || [];
-    existingSearches.unshift(usernames);
-    localStorage.setItem('searchHistory', JSON.stringify(existingSearches));
+      if (repeatUsernames.length > 0) {
+        toast.error(`${repeatUsernames.join(', ')} have been searched recently. Please try again in a couple minutes.`);
+        return false;
+      }
 
+      localStorage.setItem('playerData', JSON.stringify(results));
+
+      const existingSearches = JSON.parse(localStorage.getItem('searchHistory')) || [];
+      existingSearches.unshift(usernames);
+      localStorage.setItem('searchHistory', JSON.stringify(existingSearches));
+
+      return true;
+    } catch (error) {
+      toast.error("A network error occurred. Please try again later.");
+      console.error(error);
+      return false;
+    }
+  }
+
+  function goToCompare() {
     router.push('/compare');
     setIsLoading(false);
   }
@@ -166,7 +189,7 @@ export default function Home() {
             </div>
 
           ) : (
-            <button onClick={checkUsernames} className={`mt-4 font-medium py-2 px-4 rounded text-mc-green border-2 border-mc-green hover:border-mc-green-dark`}>
+            <button onClick={compare} className={`mt-4 font-medium py-2 px-4 rounded text-mc-green border-2 border-mc-green hover:border-mc-green-dark`}>
               Compare
             </button>
           )}

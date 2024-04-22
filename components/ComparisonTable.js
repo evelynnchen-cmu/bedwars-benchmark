@@ -65,7 +65,7 @@ export default function ComparisonTable({ playersData, avatars }) {
     const highestStats = findHighestStats(playersData, selectedMode);
 
     return (
-        <div className="">
+        <>
             <div className="mx-auto w-48 mb-8">
                 <label htmlFor="game-mode-select" className="block text-center">Select Mode:</label>
                 <select id="game-mode-select" className="mt-1 block w-full pl-2 pr-10 py-2 text-sm bg-mc-gray border border-black rounded outline-none" value={selectedMode} onChange={handleModeChange}>
@@ -81,7 +81,7 @@ export default function ComparisonTable({ playersData, avatars }) {
                         <tr>
                             <th className="px-4 lg:px-8 py-2 lg:py-4 text-right text-sm font-normal tracking-wider">{gameModes[selectedMode]} Stats</th>
                             {playersData.map(player => (
-                                <th key={player.username} className="px-2 lg:px-8 py-1 lg:py-3 text-xs lg:text-inherit text-center font-normal tracking-wider">
+                                <th key={player.username} className="px-2 lg:px-8 py-2 lg:py-3 text-xs lg:text-inherit text-center font-normal tracking-wider">
                                     <Image
                                         src={avatars[player.data.general.uuid]}
                                         width={32}
@@ -115,6 +115,6 @@ export default function ComparisonTable({ playersData, avatars }) {
                     </tbody>
                 </table>
             </div>
-        </div>
+        </>
     );
 }

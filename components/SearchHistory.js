@@ -17,7 +17,7 @@ export default function SearchHistory() {
 
     return (
         <div className="max-w-screen-xl mx-4">
-            <div className="flex flex-row items-center">
+            <div className="flex flex-row items-center mb-2">
                 <h3 className="text-left font-medium text-xl">Recent Searches</h3>
                 <span onClick={clearHistory} className="ml-2 text-underline cursor-pointer text-mc-green hover:text-mc-green-dark text-sm">
                     Clear History
