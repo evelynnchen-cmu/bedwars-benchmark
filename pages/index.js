@@ -49,9 +49,17 @@ export default function Home() {
     for (const uname of usernames) {
       const response = await fetch(`/api/mojang?username=${uname}`);
       const data = await response.json();
-
-      if (data.error) {
+      if (data.status === 404) {
         invalidUsernames.push(uname);
+      }
+      else if (data.status === 429) {
+        toast.error(`Too many requests to Mojang API. Please try again later.`);
+        return;
+
+      }
+      else if (data.status === 500) {
+        toast.error(`Failed to check if username ${uname} is valid.`);
+        return;
       }
     }
     if (invalidUsernames.length > 0) {
@@ -104,13 +112,13 @@ export default function Home() {
         <div className="mt-16">
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold text-mc-green">Bedwars Benchmark</h1>
         </div>
-        <div className="mx-4 md:mx-auto max-w-6xl w-fit">
+        <div className="mx-auto max-w-6xl w-fit">
           <p className="p-2">Compare 2 to 4 players and settle the debate of who's the best.</p>
           <div className="flex flex-wrap flex-col lg:flex-row justify-center items-center gap-2 lg:gap-4 p-2">
             {usernames.map((username, index) => (
               <React.Fragment key={index}>
 
-                {index > 0 && <h5 className="text-2xl font-medium mx-2 mc-font">vs.</h5>}
+                {index > 0 && <h5 className="text-2xl font-medium mx-1 mc-font">vs.</h5>}
 
                 <div className="relative">
                   <input id={`username-${index}`}
@@ -118,7 +126,7 @@ export default function Home() {
                     value={username}
                     onChange={(e) => handleUsernameChange(index, e.target.value)}
                     placeholder="Username"
-                    className="px-4 py-2 bg-mc-gray border border-black rounded outline-none"
+                    className="px-3 py-2 bg-mc-gray border border-black rounded outline-none w-44"
                   />
                   <label htmlFor={`username-${index}`} className="sr-only">Username</label>
                   {usernames.length > 2 && (

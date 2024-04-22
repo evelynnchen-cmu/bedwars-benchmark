@@ -1,8 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 
-const PlayerTabs = ({ playersData, avatars }) => {
-    const gameModes = ['Solo', 'Duo', 'Trio', 'Squad'];
+export default function PlayerTabs({ playersData, avatars }) {
+
+    useEffect(() => {
+        function checkOverflow() {
+            const table = document.getElementById('player-table');
+            
+            if (table.offsetWidth > window.innerWidth) {
+
+              document.getElementById('scroll-msg').style.display = 'block';
+            } else {
+              document.getElementById('scroll-msg').style.display = 'none';
+            }
+          };
+
+        checkOverflow();
+
+        window.addEventListener('resize', checkOverflow);
+
+        return () => window.removeEventListener('resize', checkOverflow);
+    }, []);
+
+    const gameModes = {
+        solo: 'Solos',
+        duo: 'Doubles',
+        trio: '3v3v3v3',
+        squad: '4v4v4v4'
+    };
+
     const [activeTab, setActiveTab] = useState(0);
     const statCategories = [
         'games_played', 'wins', 'losses', 'kills', 'deaths',
@@ -20,7 +46,7 @@ const PlayerTabs = ({ playersData, avatars }) => {
     return (
         <div className="max-w-5xl mx-auto">
             <h1 className="text-2xl md:text-3xl lg:text-4xl mb-8 text-center">Break it down by player.</h1>
-            <ul className="flex  flex-wrap text-sm text-center border-b border-gray-500">
+            <ul className="flex flex-wrap text-sm text-center border-b border-gray-500">
                 {playersData.map((player, index) => (
                     <li key={index} className="mr-2 flex-auto text-center">
                         <button onClick={() => setActiveTab(index)}
@@ -81,51 +107,51 @@ const PlayerTabs = ({ playersData, avatars }) => {
                                 </div>
                             </div>
                             <li>Hypixel Level: {player.data.general.experience}</li>
-                            <li>Rank: {player.data.general.rank}</li>
-                            <li>Karma: {player.data.general.karma}</li>
-                            <li>Coins: {player.data.general.coins}</li>
-                            <li>Achievement Points: {player.data.general.achievement_points}</li>
-                            <li>Total Kills: {player.data.general.kills}</li>
-                            <li>Total Wins: {player.data.general.wins}</li>
-                            <li>Last Login: {player.data.general.last_login}</li>
-                            <li>First Login: {player.data.general.first_login}</li>
+                            <li>Rank: {player.data.general.rank || "N/A"}</li>
+                            <li>Karma: {player.data.general.karma || "0"}</li>
+                            <li>Coins: {player.data.general.coins || "0"}</li>
+                            <li>Achievement Points: {player.data.general.achievement_points || "0"}</li>
+                            <li>Total Kills: {player.data.general.kills || "0"}</li>
+                            <li>Total Wins: {player.data.general.wins || "0"}</li>
+                            <li>Last Login: {player.data.general.last_login || "Not found"}</li>
+                            <li>First Login: {player.data.general.first_login || "Not found"}</li>
                         </ul>
-                        <div className="overflow-x-auto col-span-2">
-                            <table className="w-full divide-y divide-gray-400">
-                                <thead className="bg-mc-gray">
-                                    <tr>
-                                        <th className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">Stat</th>
-                                        {gameModes.map((mode, index) => (
-                                            <th key={index} className="px-6 py-3 text-center text-xs font-medium uppercase tracking-wider">
-                                                {mode}
-                                            </th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-gray-200">
-                                    {statCategories.map((stat, statIndex) => (
-                                        <tr key={statIndex} className={`${statIndex % 2 === 0 ? 'bg-mc-gray/95' : 'bg-mc-gray/85'}`}>
-                                            <td className="px-6 py-4 text-sm text-right capitalize">
-                                                {stat.replace(/_/g, ' ')}
-                                            </td>
-                                            {gameModes.map((mode, modeIndex) => {
-                                                const modeData = playersData[activeTab].data[mode.toLowerCase()];
-                                                const statValue = modeData && modeData[stat] ? modeData[stat] : '-';
-                                                return (
-                                                    <td key={`${modeIndex}-${statIndex}`} className="px-6 py-4 text-sm text-center"> {statValue} </td>
-                                                );
-                                            })}
+                        <div className=" col-span-2">
+                            <h5 id="scroll-msg" className="text-right text-sm italic mb-2 block md:hidden">Scroll to view more</h5>
+                            <div className="overflow-x-auto">
+                                <table id="player-table" className="w-full divide-y divide-gray-400">
+                                    <thead className="bg-mc-gray">
+                                        <tr>
+                                            <th className="px-4 py-2 text-right text-xs font-medium tracking-wider">All Stats</th>
+                                            {Object.entries(gameModes).map(([_, modeVal], index) => (
+                                                <th key={index} className="px-6 py-3 text-center text-xs font-medium tracking-wider">
+                                                    {modeVal}
+                                                </th>
+                                            ))}
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody className="bg-gray-300">
+                                        {statCategories.map((stat, statIndex) => (
+                                            <tr key={statIndex} className={`${statIndex % 2 === 0 ? 'bg-mc-gray/95' : 'bg-mc-gray/85'}`}>
+                                                <td className="px-4 py-2 whitespace-nowrap text-sm text-right tracking-wider capitalize">
+                                                    {stat.replace(/_/g, ' ')}
+                                                </td>
+                                                {Object.entries(gameModes).map(([modeKey, _], modeIndex) => {
+                                                    const modeData = player.data[modeKey];
+                                                    const statValue = modeData && modeData[stat] ? modeData[stat] : '0';
+                                                    return (
+                                                        <td key={`${modeIndex}-${statIndex}`} className="px-4 lg:px-8 py-2 lg:py-4 text-sm text-center"> {statValue} </td>
+                                                    );
+                                                })}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                        <h5 className="text-right text-sm italic block lg:hidden">Scroll to view more</h5>
                     </div>
                 ))}
             </div>
         </div>
     );
 };
-
-export default PlayerTabs;
