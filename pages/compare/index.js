@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import NavBar from '@/components/NavBar';
 import RatioViews from '@/components/RatioViews';
 import ComparisonTable from '@/components/ComparisonTable';
 import PlayerTabs from '@/components/PlayerTabs';
@@ -13,6 +12,8 @@ export default function Compare() {
 
   useEffect(() => {
     async function fetchDataAndAvatars() {
+
+      // retrieve player data 
       const data = localStorage.getItem('playerData');
       let players = [];
       if (data) {
@@ -20,6 +21,7 @@ export default function Compare() {
         setPlayersData(players);
       }
 
+      // grab player avatar heads
       const newAvatars = {};
       if (players.length > 0) {
         await Promise.all(players.map(async (player) => {
@@ -45,14 +47,13 @@ export default function Compare() {
       <Head>
         <title>Bedwars Benchmark - Compare Players</title>
       </Head>
-      <NavBar />
-      <a href="/" className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto px-4">
+      <a href="/" className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-10 h-10">
           <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 15.75 3 12m0 0 3.75-3.75M3 12h18" />
         </svg>
         <span className="sr-only">back to home</span>
-
       </a>
+      
       <div className="mx-8 space-y-8">
         <RatioViews playersData={playersData} avatars={avatars} />
         <ComparisonTable playersData={playersData} avatars={avatars} />

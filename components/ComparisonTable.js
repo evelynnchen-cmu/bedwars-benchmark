@@ -4,9 +4,9 @@ import Image from 'next/image';
 export default function ComparisonTable({ playersData, avatars }) {
 
     useEffect(() => {
-        const checkOverflow = () => {
+        // display scroll msg if table overflows
+        function checkOverflow() {
             const table = document.getElementById('comparison-table');
-          
             if (table.offsetWidth > window.innerWidth - 32) {
               document.getElementById('scroll-msg').style.display = 'block';
             } else {
@@ -105,7 +105,7 @@ export default function ComparisonTable({ playersData, avatars }) {
                                     const isHighest = currentValue === highestValue;
                                     return (
                                         <td key={player.username + statKey}
-                                            className={`whitespace-nowrap text-center ${isHighest ? 'text-mc-green' : ''}`}>
+                                            className={`whitespace-nowrap text-center font-medium ${isHighest ? 'text-mc-green' : ''}`}>
                                             {currentValue}
                                         </td>
                                     );

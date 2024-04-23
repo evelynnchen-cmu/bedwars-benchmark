@@ -4,9 +4,9 @@ import Image from 'next/image';
 export default function PlayerTabs({ playersData, avatars }) {
 
     useEffect(() => {
+        // display scroll msg if table overflows
         function checkOverflow() {
             const table = document.getElementById('player-table');
-            
             if (table.offsetWidth > window.innerWidth) {
 
               document.getElementById('scroll-msg').style.display = 'block';
@@ -30,6 +30,7 @@ export default function PlayerTabs({ playersData, avatars }) {
     };
 
     const [activeTab, setActiveTab] = useState(0);
+    
     const statCategories = [
         'games_played', 'wins', 'losses', 'kills', 'deaths',
         'beds_broken', 'beds_lost', 'final_kills', 'final_deaths', 'resources_collected'

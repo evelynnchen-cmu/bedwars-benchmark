@@ -15,10 +15,6 @@ function formatDate(timestamp) {
 export default async function handler(req, res) {
     const { username } = req.query;
 
-    if (!username) {
-        return res.status(400).json({ error: 'Username is required' });
-    }
-
     const url = `https://api.hypixel.net/player?key=${process.env.API_KEY}&name=${username}`;
 
     try {
@@ -29,6 +25,7 @@ export default async function handler(req, res) {
             return res.status(404).json({ error: 'Player not found' });
         }
 
+        // map data to my custom playerData object
         const playerData = {
             general: {
                 uuid: data.player.uuid,

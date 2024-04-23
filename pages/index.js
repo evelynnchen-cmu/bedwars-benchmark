@@ -42,6 +42,14 @@ export default function Home() {
       setIsLoading(false);
       return;
     }
+
+    // check if any of the usernames are duplicates
+    if (new Set(usernames).size !== usernames.length) {
+      toast.error('Please remove any duplicate usernames.');
+      setIsLoading(false);
+      return;
+    }
+
     const allValidUsernames = await checkUsernames();
     if (!allValidUsernames) {
       setIsLoading(false);
@@ -106,8 +114,12 @@ export default function Home() {
         return false;
       }
 
+      // successfully got data from hypixel api for all usernames
+
+      // save successful search to local storage
       localStorage.setItem('playerData', JSON.stringify(results));
 
+      // save search to search history
       const existingSearches = JSON.parse(localStorage.getItem('searchHistory')) || [];
       existingSearches.unshift(usernames);
       localStorage.setItem('searchHistory', JSON.stringify(existingSearches));
