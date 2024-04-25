@@ -183,11 +183,12 @@ export default function Home() {
             ))}
 
             {usernames.length < 4 && (
-              <button aria-label="Add player input" onClick={addPlayer} className="py-1 px-1 rounded-lg text-mc-green border-2 border-mc-green hover:border-mc-green-dark">
+              <button aria-label="Add player input" onClick={addPlayer} className="py-1 px-1 rounded-lg text-mc-green border-2 border-mc-green hover:border-mc-green-dark hover:text-mc-green-dark">
                 {/* SVG from heroicons.com */}
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" className="w-6 h-6">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                 </svg>
+                <span className="sr-only">Add player input</span>
               </button>
             )}
           </div>
@@ -201,7 +202,7 @@ export default function Home() {
             </div>
 
           ) : (
-            <button onClick={compare} className={`mt-4 font-medium py-2 px-4 rounded text-mc-green border-2 border-mc-green hover:border-mc-green-dark`}>
+            <button onClick={compare} className={`mt-4 font-medium py-2 px-4 rounded text-mc-green border-2 border-mc-green hover:border-mc-green-dark hover:text-mc-green-dark`}>
               Compare
             </button>
           )}

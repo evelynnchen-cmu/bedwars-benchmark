@@ -18,3 +18,7 @@ This tool was built with Next.js & Tailwind CSS and employs [Mojang's Public API
 4. Run the development server with `npm run dev`.
 
 ![Home page](/public/examples/home.png)
+
+![Compare page comparison view](/public/examples/comparison.png)
+
+![Compare page individual view](/public/examples/individual.png)

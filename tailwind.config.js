@@ -11,8 +11,8 @@ module.exports = {
     colors: {
       ...colors,
       'mc-red': '#bb231f',
-      'mc-green': '#01b202',
-      'mc-green-dark': '#017A01',
+      'mc-green': '#01C601',
+      'mc-green-dark': '#018E01',
       'mc-gray': '#404040',
       'coal': '#1F1F1F',
     },
