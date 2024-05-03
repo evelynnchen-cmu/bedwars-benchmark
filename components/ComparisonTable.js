@@ -105,7 +105,7 @@ export default function ComparisonTable({ playersData, avatars }) {
                                     const isHighest = currentValue === highestValue;
                                     return (
                                         <td key={player.username + statKey}
-                                            className={`whitespace-nowrap text-center font-medium ${isHighest ? 'text-mc-green' : ''}`}>
+                                            className={`whitespace-nowrap text-center ${isHighest ? 'text-mc-green' : ''}`}>
                                             {currentValue}
                                         </td>
                                     );
